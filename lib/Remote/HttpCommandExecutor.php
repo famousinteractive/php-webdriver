@@ -226,6 +226,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
      */
     public function execute(WebDriverCommand $command)
     {
+        set_time_limit(0);
         if (!isset(self::$commands[$command->getName()])) {
             throw new InvalidArgumentException($command->getName() . ' is not a valid command.');
         }
@@ -253,6 +254,8 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
         }
 
         curl_setopt($this->curl, CURLOPT_URL, $this->url . $url);
+        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($this->curl, CURLOPT_TIMEOUT, 400); //timeout in seconds
 
         // https://github.com/facebook/php-webdriver/issues/173
         if ($command->getName() === DriverCommand::NEW_SESSION) {
